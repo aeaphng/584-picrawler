@@ -1,18 +1,49 @@
-from picrawler import Picrawler
-from time import sleep
+from pyPS4Controller.controller import Controller
+from picrawler.picrawler.picrawler import Picrawler
+from vilib import Vilib
 
+# Initialize PiCrawler
 crawler = Picrawler()
-speed = 80
 
-def main():
-    while True:
-        # Move forward
-        crawler.do_action('forward', 2, speed)
-        sleep(0.05)
-        
-        # Move backward
-        crawler.do_action('backward', 2, speed)
-        sleep(0.05)
+class MyController(Controller):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-if __name__ == '__main__':
-    main()
+    # D-Pad up: move forward
+    def on_up_arrow_press(self):
+        print("Moving Forward")
+        crawler.do_action("forward")
+
+    def on_up_arrow_release(self):
+        crawler.do_action("stop")
+
+    # D-Pad down: move backward
+    def on_down_arrow_press(self):
+        print("Moving Backward")
+        crawler.do_action("backward")
+
+    def on_down_arrow_release(self):
+        crawler.do_action("stop")
+
+    # D-Pad left: turn left
+    def on_left_arrow_press(self):
+        print("Turning Left")
+        crawler.do_action("turn_left")
+
+    def on_left_arrow_release(self):
+        crawler.do_action("stop")
+
+    # D-Pad right: turn right
+    def on_right_arrow_press(self):
+        print("Turning Right")
+        crawler.do_action("turn_right")
+
+    def on_right_arrow_release(self):
+        crawler.do_action("stop")
+
+    def on_x_press(self):
+        Vilib.take_photo(photo_name="new_photo",path="/andy/Pictures/")
+
+# Connect to PS4 controller
+controller = MyController(interface="/dev/input/js0", connecting_using_ds4drv=False)
+controller.listen()
