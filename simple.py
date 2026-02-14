@@ -1,9 +1,34 @@
 from pyPS4Controller.controller import Controller
 from picrawler.picrawler.picrawler import Picrawler
-from vilib import Vilib
+import os
+from datetime import datetime
+from picamera2 import Picamera2
+import time
+
+
+# Path for saving photos
+PHOTO_PATH = "/home/andy/Pictures"
+
+# Ensure the folder exists
+os.makedirs(PHOTO_PATH, exist_ok=True)
 
 # Initialize PiCrawler
 crawler = Picrawler()
+
+
+def take_photo():
+    picam2 = Picamera2()
+    picam2.configure(picam2.create_still_configuration())
+    picam2.start()
+    time.sleep(1)  # warm up
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = os.path.join(PHOTO_PATH, f"new_photo_{timestamp}.jpg")
+
+    picam2.capture_file(filename)
+    print(f"Saved photo: {filename}")
+
+    picam2.close()
 
 class MyController(Controller):
     def __init__(self, **kwargs):
@@ -41,8 +66,10 @@ class MyController(Controller):
     def on_right_arrow_release(self):
         crawler.do_action("stop")
 
+    # X button: take photo
     def on_x_press(self):
-        Vilib.take_photo(photo_name="new_photo",path="/andy/Pictures/")
+        print("Taking photo...")
+        take_photo()
 
 # Connect to PS4 controller
 controller = MyController(interface="/dev/input/js0", connecting_using_ds4drv=False)
