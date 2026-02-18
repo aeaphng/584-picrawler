@@ -54,9 +54,6 @@ def mjpg_feed():
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
 
-# ==============================
-# Photo Capture (NO new camera!)
-# ==============================
 def take_photo():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = os.path.join(PHOTO_PATH, f"photo_{timestamp}.jpg")
