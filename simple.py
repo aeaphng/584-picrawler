@@ -22,7 +22,6 @@ os.makedirs(PHOTO_PATH, exist_ok=True)
 crawler = Picrawler()
 picam2 = Picamera2()
 
-# Configure camera ONCE
 camera_config = picam2.create_preview_configuration(
     main={"size": (1280, 720)},
 )
